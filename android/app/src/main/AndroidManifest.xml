@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.saberion_assesment">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="saberion_assesment"
         android:name="${applicationName}"
