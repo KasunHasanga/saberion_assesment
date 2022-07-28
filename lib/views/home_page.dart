@@ -85,53 +85,81 @@ class _HomePageState extends State<HomePage> {
             preferredSize: Size.fromHeight(20.0),
             child: Container(),
           )),
-      body: dataList.length > 0
-          ? Container(
-              margin: const EdgeInsets.only(bottom: 80),
-              // height: MediaQuery.of(context).size.height*0.7,
-              padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
-              child: SmartRefresher(
-                enablePullDown: false,
-                enablePullUp: true,
-                footer: CustomFooter(
-                  builder: (BuildContext context, LoadStatus? mode) {
-                    Widget body;
-                    if (mode == LoadStatus.idle) {
-                      body = (availablePageNumber > currentPageNumber)
-                          ? Text("pull up load")
-                          : Text("No more data ...");
-                    } else if (mode == LoadStatus.loading) {
-                      body = Loadingcircul(color: LightColor.appBlue);
-                    } else if (mode == LoadStatus.failed) {
-                      body = Text("Load Failed!Click retry!");
-                    } else if (mode == LoadStatus.canLoading) {
-                      body = Text("release to load more");
-                    } else {
-                      body = Text("No more Data");
-                    }
-                    return Container(
-                      height: 55.0,
-                      child: Center(child: body),
-                    );
-                  },
+      body:dataList.length > 0
+          ?  SingleChildScrollView(
+            child: Container(
+        margin: const EdgeInsets.only(bottom: 80),
+        // height: MediaQuery.of(context).size.height*0.5,
+        padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                onChanged: (value){
+                  // searchData(st = value.trim().toLowerCase());
+                  // Method For Searching
+                },
+                decoration: InputDecoration(
+                  hintText: "Search Data",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius:
+                    BorderRadius.all(Radius.circular(7.0)),
+                  ),
                 ),
-                controller: _refreshController,
-                onLoading: _onLoading,
-                onRefresh: null,
-                child: GridView.builder(
-                    itemCount: itemCount,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
-                    itemBuilder: (BuildContext context, int index) {
-                      return listTile(
-                          imageUrl: dataList[index]["avatar"],
-                          name: (dataList[index]["first_name"] +
-                              " " +
-                              dataList[index]["last_name"]));
-                    }),
               ),
-            )
-          : _emptyScreen(),
+
+              Container(
+                margin: const EdgeInsets.only(top: 10),
+                height: MediaQuery.of(context).size.height*0.6,
+                // padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
+                    child: SmartRefresher(
+                      enablePullDown: false,
+                      enablePullUp: true,
+                      footer: CustomFooter(
+                        builder: (BuildContext context, LoadStatus? mode) {
+                          Widget body;
+                          if (mode == LoadStatus.idle) {
+                            body = (availablePageNumber > currentPageNumber)
+                                ? Text("pull up load")
+                                : Text("No more data ...");
+                          } else if (mode == LoadStatus.loading) {
+                            body = Loadingcircul(color: LightColor.appBlue);
+                          } else if (mode == LoadStatus.failed) {
+                            body = Text("Load Failed!Click retry!");
+                          } else if (mode == LoadStatus.canLoading) {
+                            body = Text("release to load more");
+                          } else {
+                            body = Text("No more Data");
+                          }
+                          return Container(
+                            height: 55.0,
+                            child: Center(child: body),
+                          );
+                        },
+                      ),
+                      controller: _refreshController,
+                      onLoading: _onLoading,
+                      onRefresh: null,
+                      child: GridView.builder(
+                          itemCount: itemCount,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2),
+                          itemBuilder: (BuildContext context, int index) {
+                            return listTile(
+                                imageUrl: dataList[index]["avatar"],
+                                name: (dataList[index]["first_name"] +
+                                    " " +
+                                    dataList[index]["last_name"]));
+                          }),
+                    ),
+                  )
+                  // : _emptyScreen(),
+            ],
+        ),
+      ),
+          ): _emptyScreen(),
     );
   }
 
