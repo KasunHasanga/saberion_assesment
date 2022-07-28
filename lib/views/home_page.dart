@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   List dataList = [];
   int currentPageNumber = 1; // current page holder for pagination
   int availablePageNumber = 0;
-  int itemCount =0;
+  int itemCount = 0;
   RefreshController _refreshController = RefreshController(
       initialRefresh: false); // SmartRefresher widget scroll controller
   bool isFirstTime =
@@ -41,6 +41,16 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  /// todo implement popMenu
+  void handleClick(String value) {
+    switch (value) {
+      case 'Logout':
+        break;
+      case 'Settings':
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     /// todo 1.search field and an options menu
@@ -49,14 +59,37 @@ class _HomePageState extends State<HomePage> {
     /// todo 4.The grid layout should have infinite scroll support i.e. if the user scrolls to the bottom of the page, then the app will re-contact the image search API to get more results and add them to the bottom of the grid.
     return Scaffold(
       appBar: AppBar(
-        actions: [Icon(Icons.menu),SizedBox(width: 15,)],
-        title: Text("Test"),
-      ),
+          actions: [
+            PopupMenuButton<String>(
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {'Logout', 'Settings'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+            SizedBox(
+              width: 15,
+            )
+          ],
+          title: Text("Test"),
+          centerTitle: true,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(70),
+                  bottomRight: Radius.circular(70))),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(20.0),
+            child: Container(),
+          )),
       body: dataList.length > 0
           ? Container(
               margin: const EdgeInsets.only(bottom: 80),
               // height: MediaQuery.of(context).size.height*0.7,
-              padding: const EdgeInsets.only(top: 10,left: 8,right: 8),
+              padding: const EdgeInsets.only(top: 10, left: 8, right: 8),
               child: SmartRefresher(
                 enablePullDown: false,
                 enablePullUp: true,
@@ -64,7 +97,9 @@ class _HomePageState extends State<HomePage> {
                   builder: (BuildContext context, LoadStatus? mode) {
                     Widget body;
                     if (mode == LoadStatus.idle) {
-                      body = (availablePageNumber > currentPageNumber)?Text("pull up load"):Text("No more data ...");
+                      body = (availablePageNumber > currentPageNumber)
+                          ? Text("pull up load")
+                          : Text("No more data ...");
                     } else if (mode == LoadStatus.loading) {
                       body = Loadingcircul(color: LightColor.appBlue);
                     } else if (mode == LoadStatus.failed) {
@@ -85,23 +120,22 @@ class _HomePageState extends State<HomePage> {
                 onRefresh: null,
                 child: GridView.builder(
                     itemCount: itemCount,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2),
-                    itemBuilder: (BuildContext context,int index){
-                  return listTile(imageUrl:  dataList[index]["avatar"] ,name:  (dataList[index]["first_name"]+" "+dataList[index]["last_name"]));
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2),
+                    itemBuilder: (BuildContext context, int index) {
+                      return listTile(
+                          imageUrl: dataList[index]["avatar"],
+                          name: (dataList[index]["first_name"] +
+                              " " +
+                              dataList[index]["last_name"]));
                     }),
-                // child: ListView.builder(
-                //     padding: const EdgeInsets.only(top: 20.0),
-                //     itemCount: dataList.length,
-                //     itemBuilder: (c, index) =>
-                //         listTile(dataList[index]["avatar"])),
-                // itemBuilder: (c, index) => Text(index.toString() +dataList[index]["first_name"])),
               ),
             )
           : _emptyScreen(),
     );
   }
 
-  Widget listTile({required String imageUrl ,required String name}) {
+  Widget listTile({required String imageUrl, required String name}) {
     return Column(
       children: [
         CachedNetworkImage(
@@ -138,9 +172,9 @@ class _HomePageState extends State<HomePage> {
         if (isFirstTime) {
           dataList = res['data'];
           availablePageNumber = res['total_pages'];
-         setState(() {
-           itemCount = dataList.length;
-         });
+          setState(() {
+            itemCount = dataList.length;
+          });
 
           isFirstTime = false;
         } else {
@@ -181,9 +215,9 @@ class _HomePageState extends State<HomePage> {
         children: [
           Center(
               child: Image.asset(
-                'assests/img/loading.png',
-                fit: BoxFit.fitWidth,
-              )),
+            'assests/img/loading.png',
+            fit: BoxFit.fitWidth,
+          )),
           SizedBox(
             height: 30,
           ),
