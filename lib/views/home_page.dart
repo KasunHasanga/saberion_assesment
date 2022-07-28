@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:saberion_assesment/theme/light_color.dart';
 import 'package:saberion_assesment/widget/loading/loading_circuls.dart';
@@ -53,11 +54,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     /// todo 1.search field and an options menu
     /// todo 2.Get Data from https://reqres.in/api/users?page=1 display the result images in a grid-layout below the search field.
     /// todo 3.The images must be shown as square views in the grid without any skewing.
     /// todo 4.The grid layout should have infinite scroll support i.e. if the user scrolls to the bottom of the page, then the app will re-contact the image search API to get more results and add them to the bottom of the grid.
     return Scaffold(
+      backgroundColor: LightColor.appBackground,
       appBar: AppBar(
           actions: [
             PopupMenuButton<String>(
