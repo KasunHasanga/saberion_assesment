@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                       child: GridView.builder(
                           itemCount: itemCount,
                           gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount:MediaQuery.of(context).size.width>600? MediaQuery.of(context).size.width>1000?6:4:MediaQuery.of(context).size.width<400?1:2),
+                              crossAxisCount:MediaQuery.of(context).size.width>600? MediaQuery.of(context).size.width>1000?6:4:MediaQuery.of(context).size.width<350?1:2),
                           itemBuilder: (BuildContext context, int index) {
                             return listTile(
                                 imageUrl: dataList[index]["avatar"],
