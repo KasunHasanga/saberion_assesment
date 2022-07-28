@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   int currentPageNumber = 1; // current page holder for pagination
   int availablePageNumber = 0;
   int itemCount = 0;
-  RefreshController _refreshController = RefreshController(
+  final RefreshController _refreshController = RefreshController(
       initialRefresh: false); // SmartRefresher widget scroll controller
   bool isFirstTime =
       true; // check if fisrt time status for arrange the dataList array
@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
     /// todo 1.search field and an options menu
     /// todo 2.Get Data from https://reqres.in/api/users?page=1 display the result images in a grid-layout below the search field.
     /// todo 3.The images must be shown as square views in the grid without any skewing.
-    /// todo 4.The grid layout should have infinite scroll support i.e. if the user scrolls to the bottom of the page, then the app will re-contact the image search API to get more results and add them to the bottom of the grid.
     return Scaffold(
       backgroundColor: LightColor.appBackground,
       appBar: AppBar(
@@ -76,18 +75,18 @@ class _HomePageState extends State<HomePage> {
                 }).toList();
               },
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             )
           ],
-          title: Text("Test"),
+          title: const Text("Saberion Assessment"),
           centerTitle: true,
-          shape: ContinuousRectangleBorder(
+          shape: const ContinuousRectangleBorder(
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(70),
                   bottomRight: Radius.circular(70))),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(20.0),
+            preferredSize: const Size.fromHeight(20.0),
             child: Container(),
           )),
       body:dataList.length > 0
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                   // searchData(st = value.trim().toLowerCase());
                   // Method For Searching
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Search Data",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(
@@ -127,18 +126,18 @@ class _HomePageState extends State<HomePage> {
                           Widget body;
                           if (mode == LoadStatus.idle) {
                             body = (availablePageNumber > currentPageNumber)
-                                ? Text("pull up load")
-                                : Text("No more data ...");
+                                ? const Text("pull up load")
+                                : const Text("No more data ...");
                           } else if (mode == LoadStatus.loading) {
                             body = Loadingcircul(color: LightColor.appBlue);
                           } else if (mode == LoadStatus.failed) {
-                            body = Text("Load Failed!Click retry!");
+                            body = const Text("Load Failed!Click retry!");
                           } else if (mode == LoadStatus.canLoading) {
-                            body = Text("release to load more");
+                            body = const Text("release to load more");
                           } else {
-                            body = Text("No more Data");
+                            body = const Text("No more Data");
                           }
-                          return Container(
+                          return SizedBox(
                             height: 55.0,
                             child: Center(child: body),
                           );
@@ -149,8 +148,8 @@ class _HomePageState extends State<HomePage> {
                       onRefresh: null,
                       child: GridView.builder(
                           itemCount: itemCount,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2),
+                          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount:MediaQuery.of(context).size.width>600? MediaQuery.of(context).size.width>1000?6:4:MediaQuery.of(context).size.width<400?1:2),
                           itemBuilder: (BuildContext context, int index) {
                             return listTile(
                                 imageUrl: dataList[index]["avatar"],
@@ -173,11 +172,12 @@ class _HomePageState extends State<HomePage> {
       children: [
         CachedNetworkImage(
           imageUrl: imageUrl,
-          width: 100,
-          height: 100,
-          placeholder: (context, url) => CircularProgressIndicator(),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          // width: MediaQuery.of(context).size.width/2,
+          // height: MediaQuery.of(context).size.width/2,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
+        const SizedBox(height: 5,),
         Text(name)
       ],
     );
@@ -240,37 +240,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _emptyScreen() {
-    return Container(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-              child: Image.asset(
-            'assests/img/loading.png',
-            fit: BoxFit.fitWidth,
-          )),
-          SizedBox(
-            height: 30,
-          ),
-          Text(
-            'Loading',
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 18.0,
-                fontFamily: "FaktPro",
-                color: LightColor.appGreyDark),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          isDataLoading
-              ? Center(
-                  child: Loadingcircul(color: LightColor.appBlue),
-                )
-              : Container(),
-        ],
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+                child: Image.asset(
+              'assests/img/loading.png',
+              fit: BoxFit.fitWidth,
+            )),
+            const SizedBox(
+              height: 30,
+            ),
+            const Text(
+              'Loading',
+              style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  fontSize: 18.0,
+                  fontFamily: "FaktPro",
+                  color: LightColor.appGreyDark),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            isDataLoading
+                ? Center(
+                    child: Loadingcircul(color: LightColor.appBlue),
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }
