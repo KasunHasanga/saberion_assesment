@@ -67,7 +67,9 @@ flutter:
    - assests/img/loading.png
    - assests/img/playstore.png
    - assests/img/image 1.png
-
+   - assests/img/phone-call.png
+   - assests/img/email.png
+   - assests/img/location.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

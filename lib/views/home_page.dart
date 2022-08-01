@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:saberion_assesment/theme/light_color.dart';
+import 'package:saberion_assesment/views/details_page/details_page.dart';
 import 'package:saberion_assesment/widget/loading/loading_circuls.dart';
 import 'package:saberion_assesment/services/api_sevices.dart' as api_service;
 import 'package:saberion_assesment/config/url_config.dart' as config;
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isDataLoading = false; // data loading status from API
-  List dataList = [];
+  List dataList= [];
   List genderValue = ['male', 'Female', 'all'];
   String selectedGender="all";
 
@@ -50,26 +51,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: LightColor.appBackground,
       appBar: AppBar(
-          // actions: [
-          //   PopupMenuButton<String>(
-          //     onSelected: handleClick,
-          //     itemBuilder: (BuildContext context) {
-          //       return {'Logout', 'Settings'}.map((String choice) {
-          //         return PopupMenuItem<String>(
-          //           value: choice,
-          //           child: Text(choice),
-          //         );
-          //       }).toList();
-          //     },
-          //   ),
-          //   const SizedBox(
-          //     width: 15,
-          //   )
-          // ],
           title: Image.asset("assests/img/image 1.png"),
           elevation: 2,
           backgroundColor: LightColor.appBackground,
-          centerTitle: true,
+          // centerTitle: true,
 
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(20.0),
@@ -85,11 +70,16 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                        onTap: () {
-                          _getPreferance();
-                        },
-                        child: Text("Saberion Assessment")),
+                    MaterialButton(onPressed:() {
+                      _getPreferance();
+                    },
+                      color: LightColor.appBlue,
+                      child: Text("Generate New Users"),),
+                    // GestureDetector(
+                    //     onTap: () {
+                    //       _getPreferance();
+                    //     },
+                    //     child: Text("Saberion Assessment")),
                     // TextField(
                     //   onChanged: (value){
                     //     // searchData(st = value.trim().toLowerCase());
@@ -112,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           RadioListTile(
                             title: Text("All"),
-                            value: "All",
+                            value: "all",
                             groupValue: selectedGender,
                             onChanged: (value){
                               setState(() {
@@ -188,7 +178,11 @@ class _HomePageState extends State<HomePage> {
   Widget listTile({required String imageUrl, required String name,required var data}) {
     return GestureDetector(
       onTap: (){
-        print(data);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>  DetailsPage(details: data,)),
+        );
       },
       child: Container(
         color: LightColor.appBlue,
@@ -218,16 +212,14 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         isDataLoading = true;
       });
-      var params = config.apiPath + "results=50" +selectedGender =="all"?"":"&gender=$selectedGender";
+      var params = config.apiPath + "results=100" +(selectedGender =="all"?"":"&gender=$selectedGender");
       var response = await api_service.fetchGet(params);
       if (response.statusCode == 200) {
         var res = json.decode(response.body);
-
-        dataList = res['results'];
-        print(res['results']);
-        print(params);
-        print(dataList.length);
-
+        dataList=res['results'];
+print(res['results']);
+// print(dataList['results']);
+print(dataList.length);
         setState(() {
           isDataLoading = false;
         });
